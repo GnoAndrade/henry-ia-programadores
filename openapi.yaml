@@ -1,0 +1,195 @@
+openapi: 3.0.0
+info:
+  title: Numerical Operations API
+  version: 1.0.0
+  description: API for numerical operations with JWT authentication
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Credentials:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    Payload:
+      type: object
+      properties:
+        numbers:
+          type: array
+          items:
+            type: integer
+      required:
+        - numbers
+
+    BinarySearchPayload:
+      type: object
+      properties:
+        numbers:
+          type: array
+          items:
+            type: integer
+        target:
+          type: integer
+      required:
+        - numbers
+        - target
+
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: User registered successfully
+        '400':
+          description: User already exists
+
+  /login:
+    post:
+      summary: User login and token generation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+        '401':
+          description: Invalid credentials
+
+  /bubble-sort:
+    post:
+      summary: Sort numbers using bubble sort
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payload'
+      responses:
+        '200':
+          description: Sorted numbers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  numbers:
+                    type: array
+                    items:
+                      type: integer
+
+  /filter-even:
+    post:
+      summary: Filter even numbers from a list
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payload'
+      responses:
+        '200':
+          description: Even numbers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  even_numbers:
+                    type: array
+                    items:
+                      type: integer
+
+  /sum-elements:
+    post:
+      summary: Calculate sum of list elements
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payload'
+      responses:
+        '200':
+          description: Sum of elements
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sum:
+                    type: integer
+
+  /max-value:
+    post:
+      summary: Find maximum value in a list
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payload'
+      responses:
+        '200':
+          description: Maximum value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  max:
+                    type: integer
+        '400':
+          description: Empty list
+
+  /binary-search:
+    post:
+      summary: Perform binary search on a sorted list
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BinarySearchPayload'
+      responses:
+        '200':
+          description: Binary search result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  found:
+                    type: boolean
+                  index:
+                    type: integer
